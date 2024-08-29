@@ -15,6 +15,7 @@ Temp
 /example/.vs
 *DS_Store
 *.vscode
+*.code-workspace
 src/managed/TstUnity/obj/
 .vs
 /example/Assembly-CSharp-Editor.csproj
