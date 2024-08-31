@@ -52,54 +52,47 @@ public class NativeCDemo : MonoBehaviour
         }
 
 #if OLD_TEST
-        if (GUILayout.Button("RD.cmd.CommitHash", GUILayout.Height((Screen.height - retHeight) >> 4)))
-		{
+        if (GUILayout.Button("RD.cmd.CommitHash", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             m_strRD = RenderDocCmdCore.RENDERDOC_CanGlobalHook().ToString();
         }
-        if (GUILayout.Button("RD.cmd.usleep", GUILayout.Height((Screen.height - retHeight) >> 4)))
-		{
+        if (GUILayout.Button("RD.cmd.usleep", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             Debug.Log($"Before RenderDocCmdCore.usleep()");
             m_strRD = RenderDocCmdCore.usleep((IntPtr)6000000).ToString();
             Debug.Log($"After RenderDocCmdCore.usleep()"); 
         }
-        if (GUILayout.Button("RD.vklayer.RENDERDOC_SetDebugLogFile", GUILayout.Height((Screen.height - retHeight) >> 4)))
-        {
+        if (GUILayout.Button("RD.vklayer.RENDERDOC_SetDebugLogFile", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             VkLayerCore.RENDERDOC_SetDebugLogFile("./fuck123.log");
         }
-        if (GUILayout.Button("RD.vklayer.force_include_libentry", GUILayout.Height((Screen.height - retHeight) >> 4)))
-		{
+        if (GUILayout.Button("RD.vklayer.force_include_libentry", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             m_strRD = VkLayerCore.force_include_libentry().ToString();
         }
-        if (GUILayout.Button("RD.vklayer.usleep", GUILayout.Height((Screen.height - retHeight) >> 4)))
-		{
+        if (GUILayout.Button("RD.vklayer.usleep", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             Debug.Log($"Before VkLayerCore.usleep()");
             m_strRD = VkLayerCore.usleep((IntPtr)6000000).ToString();
             Debug.Log($"After VkLayerCore.usleep()"); 
         }
 #endif
-        if (GUILayout.Button("[RDW] Module", GUILayout.Height((Screen.height - retHeight) >> 4)))
-        {
+        if (GUILayout.Button("[RDW] Module", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             RDWInterface.RDWDll.RdwInitModule(@"libVkLayer_GLES_RenderDoc.so");
         }
-        if (GUILayout.Button("[RDW] GetTemplate", GUILayout.Height((Screen.height - retHeight) >> 4)))
-        {
+        if (GUILayout.Button("[RDW] GetTemplate", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             m_strRD = RDWInterface.RDWDll.RdwGetPathTemplate();
         }
-        if (GUILayout.Button("[RDW] SetTemplate", GUILayout.Height((Screen.height - retHeight) >> 4)))
-        {
+        if (GUILayout.Button("[RDW] SetTemplate", GUILayout.Height((Screen.height - retHeight) >> 4))){
             RDWInterface.RDWDll.RdwSetPathTemplate(@"/sdcard/Android/data/com.hellowod.example/files/RenderDoc/FuckFrame_"); 
         }
-        if (GUILayout.Button("[RDW] StartCapture", GUILayout.Height((Screen.height - retHeight) >> 4)))
-        {
+        if (GUILayout.Button("[RDW] StartCapture", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             RDWInterface.RDWDll.RdwStartCapture(IntPtr.Zero, IntPtr.Zero);
         }
-        if (GUILayout.Button("[RDW] EndCapture", GUILayout.Height((Screen.height - retHeight) >> 4)))
-        {
+        if (GUILayout.Button("[RDW] EndCapture", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             RDWInterface.RDWDll.RdwEndCapture(IntPtr.Zero, IntPtr.Zero);
         }
-        if (GUILayout.Button("[RDW] TriggerCapture", GUILayout.Height((Screen.height - retHeight) >> 4)))
-        {
+        if (GUILayout.Button("[RDW] TriggerCapture", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             RDWInterface.RDWDll.RdwTriggerCapture();
+        }
+        if (GUILayout.Button("[RDW] IsRelease", GUILayout.Height((Screen.height - retHeight) >> 4))) {
+            //Debug.Log($"RENDERDOC_GetVersionString={RDWInterface.RDWDll.RENDERDOC_GetVersionString()}");
+            Debug.Log($"RENDERDOC_IsReleaseBuild={RDWInterface.RDWDll.RENDERDOC_IsReleaseBuild()}");
         }
 
         GUILayout.TextArea(

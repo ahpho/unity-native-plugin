@@ -10,7 +10,7 @@ namespace RDWInterface
 	public static class RDWDll
 	{
         // 系统api
-#if UNITY_EDITOR && UNITY_STANDALONE_WIN
+#if UNITY_EDITOR && !UNITY_EDITOR_OSX
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
@@ -23,35 +23,38 @@ namespace RDWInterface
         //需要与loadLib/getProc等效的Posix实现
 #endif
 
-        //直接调用
+
+        //直接调用以确保此so来自本app，而并非来自org.renderdoc.renderdoccmd.arm64.apk（adb -s XXX shell settings put global gpu_debug_layer_app org.renderdoc.renderdoccmd.arm64）
+        //与在Unity中勾选此so的"Load on start"有着相同目的
 #if UNITY_EDITOR
-    #if UNITY_STANDALONE_WIN
+    #if !UNITY_EDITOR_OSX
         public const string RENDERDOC = "renderdoc";
     #else
-		public const string RENDERDOC = "renderdoc_Mac_Bundle";
+        public const string RENDERDOC = "renderdoc_Mac_Bundle";
     #endif
 #else
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE || UNITY_IOS
 		public const string RENDERDOC = "__Internal";
     #else
-		public const string RENDERDOC = "renderdoc";
+		public const string RENDERDOC = "VkLayer_GLES_RenderDoc";
     #endif
 #endif
-        [DllImport(RENDERDOC, CharSet = CharSet.Ansi)]
-        public static extern void RENDERDOC_StartSelfHostCapture(string strModuleName);
-        [DllImport(RENDERDOC, CharSet = CharSet.Ansi)]
-        public static extern void RENDERDOC_EndSelfHostCapture(string strModuleName);
+        [DllImport(RENDERDOC, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.LPStr)]
+        public static extern string RENDERDOC_GetVersionString();
+        [DllImport(RENDERDOC, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool RENDERDOC_IsReleaseBuild();
 
 
         //wrap调用
 #if UNITY_EDITOR
-    #if UNITY_STANDALONE_WIN
+    #if !UNITY_EDITOR_OSX
         public const string RENDERDOCWRAP = "tstunity";
     #else
         public const string RENDERDOCWRAP = "tstunity_Mac_Bundle";
     #endif
 #else
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE || UNITY_IOS
 		public const string RENDERDOCWRAP = "__Internal";
     #else
 		public const string RENDERDOCWRAP = "tstunity";
