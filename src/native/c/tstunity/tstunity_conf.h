@@ -2,14 +2,22 @@
 conf
 */
 
-#if defined _WIN32
-    #if LIBTST_BUILD
-        #define TST_API __declspec(dllexport)
+#if defined(_WIN32) || defined(_MSC_VER)
+    #ifdef LIBTST_BUILD
+        #define TST_API extern "C" __declspec(dllexport)
     #else
-        #define TST_API __declspec(dllimport)
+        #define TST_API extern "C" __declspec(dllimport)
     #endif
 #else
     #define TST_API
+#endif
+
+#if defined(_WIN32) || defined(_MSC_VER)
+	#define CALLBACK __stdcall
+#elif defined(__APPLE__)
+	#define CALLBACK
+#elif defined(__ANDROID__) || defined(ANDROID)
+	#define CALLBACK 
 #endif
 
 typedef void (*CSFunction)();

@@ -26,6 +26,14 @@ public static class NativeCCore
 
     [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
     public static extern void call_func();
-    
-   
+
+    public delegate void FrameMoveCallback(int nParam1);
+    [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RegisterFrameMoveCallback(int nParam1, FrameMoveCallback callback);
+    [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void FrameMove();
+    [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void CrashNoTry();
+    [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void CrashTry();
 }
