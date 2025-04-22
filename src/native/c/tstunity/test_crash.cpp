@@ -10,7 +10,7 @@ TST_API void FrameMove()
 {
 	if (g_fnCallBack)
 	{
-		g_fnCallBack(g_nParam1);
+		g_fnCallBack(g_nParam1 + 1);
 		g_fnCallBack = NULL;
 		g_nParam1 = 0;
 	}

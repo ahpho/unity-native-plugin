@@ -42,7 +42,7 @@ public class NativeCDemo : MonoBehaviour
 	public static void OnFrameMoveCallBack(int nParam)
     {
         Debug.Log($"OnFrameMoveCallBack: {nParam}");
-        throw new Exception("Fuck. Exception.");
+        throw new Exception("Fuck done! throwing exception...");
     }
 
     private void OnGUI()
@@ -56,11 +56,12 @@ public class NativeCDemo : MonoBehaviour
 
         if (GUILayout.Button("调用C代码", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             CallFunction();
-            // Debug.Log($"......调用C代码");
-            // m_fnFrameMoveCallback = new NativeCCore.FrameMoveCallback(OnFrameMoveCallBack);
-            // NativeCCore.RegisterFrameMoveCallback(42, m_fnFrameMoveCallback);
-            // NativeCCore.FrameMove();
-            // Debug.Log($"......调用C代码结束");
+
+            Debug.Log($"......调用C代码");
+            m_fnFrameMoveCallback = new NativeCCore.FrameMoveCallback(OnFrameMoveCallBack);
+            NativeCCore.RegisterFrameMoveCallback(42, m_fnFrameMoveCallback);
+            NativeCCore.FrameMove();
+            Debug.Log($"......调用C代码结束");
         }
         if (GUILayout.Button("C调用CS", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             PInvokeFunction();
