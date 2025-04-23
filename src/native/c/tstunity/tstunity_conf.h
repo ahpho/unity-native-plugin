@@ -8,6 +8,12 @@ conf
     #else
         #define TST_API extern "C" __declspec(dllimport)
     #endif
+#elif defined(__ANDROID__) || defined(ANDROID)
+	#ifdef LIBTST_BUILD
+		#define TST_API extern "C" __attribute__((visibility("default")))
+	#else
+		#define TST_API extern "C" 
+	#endif
 #else
     #define TST_API
 #endif

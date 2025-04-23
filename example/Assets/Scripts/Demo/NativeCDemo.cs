@@ -12,9 +12,56 @@ public class NativeCDemo : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log($"Before NativeCDemo.Start()");
+        Debug.Log($"unity: ......Before NativeCDemo.Start()");
         NativeCSBinder.Register();
-        Debug.Log($"After NativeCDemo.Start()");
+        Debug.Log($"unity: ......After NativeCDemo.Start()");
+
+
+        Debug.Log($"unity: ......调用C代码");
+        // m_fnFrameMoveCallback = new NativeCCore.FrameMoveCallback(OnFrameMoveCallBack);
+        // NativeCCore.RegisterFrameMoveCallback(42, m_fnFrameMoveCallback);
+        // NativeCCore.FrameMove();
+        int emLOAD_MAP = 1;
+        NativeCCore.RegisterMapCallback(emLOAD_MAP, NearMapCallback);
+        NativeCCore.TestMapCallback();
+        Debug.Log($"unity: ......调用C代码结束");
+    }
+
+    // 我自己的写法
+    private static NativeCCore.FrameMoveCallback m_fnFrameMoveCallback;
+
+    [MonoPInvokeCallback(typeof(NativeCCore.FrameMoveCallback))]
+	public static void OnFrameMoveCallBack(int nParam)
+    {
+        ScriptCrash(nParam);
+    }
+
+    // Client的写法
+    [MonoPInvokeCallback(typeof(NativeCCore.MapCallback))]
+    public static void NearMapCallback(string szMapName, string szInfoDir, int nMapTemplateId, int nNotResetCamera)
+    {
+        ScriptCrash(nMapTemplateId);
+    }
+
+    private static void ScriptCrash(int nParam)
+    {
+        Debug.Log($"unity: OnFrameMoveCallBack: {nParam}");
+        try {
+            Material m1 = null;
+            m1.color = Color.red;
+        }
+        catch (Exception e){
+            Debug.LogError($"unity: OnFrameMoveCallBack: {e.Message}");
+            Material m2 = null;
+            m2.color = Color.red;
+        }
+        finally{
+            Debug.Log($"unity: OnFrameMoveCallBack: finally");
+            Material m3 = null;
+            m3.color = Color.red;
+        }
+        //NativeCCore.CrashNoTry();
+        Debug.Log($"unity: Fuck done! throwing exception...");
     }
 
     private void CallFunction()
@@ -33,16 +80,6 @@ public class NativeCDemo : MonoBehaviour
     private void PInvokeFunction()
     {
         NativeCCore.call_func();
-    }
-
-
-    private static NativeCCore.FrameMoveCallback m_fnFrameMoveCallback;
-
-    [MonoPInvokeCallback(typeof(NativeCCore.FrameMoveCallback))]
-	public static void OnFrameMoveCallBack(int nParam)
-    {
-        Debug.Log($"OnFrameMoveCallBack: {nParam}");
-        throw new Exception("Fuck done! throwing exception...");
     }
 
     private void OnGUI()

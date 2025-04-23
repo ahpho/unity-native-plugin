@@ -27,6 +27,7 @@ public static class NativeCCore
     [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
     public static extern void call_func();
 
+
     public delegate void FrameMoveCallback(int nParam1);
     [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
     public static extern void RegisterFrameMoveCallback(int nParam1, FrameMoveCallback callback);
@@ -36,4 +37,17 @@ public static class NativeCCore
     public static extern void CrashNoTry();
     [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
     public static extern void CrashTry();
+
+
+#if UNITY_IPHONE && !UNITY_EDITOR
+	private const string CLIENT_SCENE = "__Internal";
+#else
+    private const string CLIENT_SCENE = "Client";
+#endif
+	public delegate void MapCallback(string szParam1, string szParam2, int nParam, int nParam2);
+    [DllImport(CLIENT_SCENE, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RegisterMapCallback(int nType, MapCallback fnCallback);
+    [DllImport(CLIENT_SCENE, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void TestMapCallback();
+    
 }
