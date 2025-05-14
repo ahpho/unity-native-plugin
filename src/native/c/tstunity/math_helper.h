@@ -29,5 +29,8 @@ TST_API void RegisterFrameMoveCallback(int nParam1, FrameMoveCallback* callback)
 TST_API void FrameMove();
 TST_API void CrashNoTry();
 TST_API void CrashTry();
+TST_API void ThrowCppException();
+TST_API void TryAndCallIl2cpp();
+TST_API void TryAndCallSelf();
 
 #endif//MATH_HELPER_

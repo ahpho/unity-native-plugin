@@ -37,6 +37,14 @@ public static class NativeCCore
     public static extern void CrashNoTry();
     [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
     public static extern void CrashTry();
+    [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void TryAndCallIl2cpp();
+    [DllImport(UNITYDLL, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void TryAndCallSelf();
+
+
+    [DllImport("il2cppRF", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void DllCanUnloadNow();
 
 
 #if UNITY_IPHONE && !UNITY_EDITOR
@@ -49,5 +57,12 @@ public static class NativeCCore
     public static extern void RegisterMapCallback(int nType, MapCallback fnCallback);
     [DllImport(CLIENT_SCENE, CallingConvention = CallingConvention.Cdecl)]
     public static extern void TestMapCallback();
-    
+    //[DllImport(CLIENT_SCENE, CallingConvention = CallingConvention.Cdecl)]
+	//public static extern void CoreCrashAccessViolation();
+    //[DllImport(CLIENT_SCENE, CallingConvention = CallingConvention.Cdecl)]
+	//public static extern void CoreCrashDivBy0();
+    //[DllImport(CLIENT_SCENE, CallingConvention = CallingConvention.Cdecl)]
+	//public static extern void CoreThrowString();
+    //[DllImport(CLIENT_SCENE, CallingConvention = CallingConvention.Cdecl)]
+	//public static extern void CoreThrowStdException();
 }

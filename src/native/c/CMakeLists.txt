@@ -2,9 +2,12 @@
 
 project(tstunity)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(ANDROID_STL c++_static)
+set(ANDROID_PLATFORM android-22)
+set(CMAKE_ANDROID_API 22)
 
 # 确保启用异常支持
 # 对于大多数编译器，异常是默认启用的，但这里显式指定以确保
@@ -15,9 +18,17 @@ if(MSVC)
     add_compile_options(/DLIBTST_BUILD)
 else()
     # GCC/Clang编译器选项
-    # -fexceptions 启用异常支持  # -fno-exceptions
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -std=c++20 -Wno-register -fexceptions -fsigned-char -fPIC")
+    # -fexceptions 启用异常支持, -fno-exceptions关闭
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -std=c++11 -Wno-register -fexceptions ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U_FORTIFY_SOURCE -fno-rtti -funwind-tables -fPIC -g ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-format=msvc -fdiagnostics-absolute-paths -no-canonical-prefixes ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char -fno-strict-overflow -fomit-frame-pointer -fvisibility=hidden -fstack-protector ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstrict-aliasing -ffunction-sections -fdata-sections -fmessage-length=0 -fcolor-diagnostics ")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--wrap,sigaction -Wl,--wrap,sigaction -Wl,--gc-sections -Wl,--fatal-warnings -Wl,--no-undefined -Wl,--build-id -Wl,-z,noexecstack -shared -rdynamic -Wl,-z,relro ")
     add_compile_options(-DLIBTST_BUILD)
+    add_compile_options(-DANDROID)
+    add_compile_options(-DANDROID_PLATFORM=android-22)
+    add_compile_options(-DANDROID_NATIVE_API_LEVEL=android-22)
 endif()
 
 

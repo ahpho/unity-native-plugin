@@ -21,10 +21,12 @@ public class NativeCDemo : MonoBehaviour
         // m_fnFrameMoveCallback = new NativeCCore.FrameMoveCallback(OnFrameMoveCallBack);
         // NativeCCore.RegisterFrameMoveCallback(42, m_fnFrameMoveCallback);
         // NativeCCore.FrameMove();
-        int emLOAD_MAP = 1;
-        NativeCCore.RegisterMapCallback(emLOAD_MAP, NearMapCallback);
-        NativeCCore.TestMapCallback();
-        Debug.Log($"unity: ......调用C代码结束");
+		
+        //int emLOAD_MAP = 1;
+        //Debug.Log($"unity: ......NativeCCore.RegisterMapCallback. emLOAD_MAP={emLOAD_MAP}");
+        //NativeCCore.RegisterMapCallback(emLOAD_MAP, NearMapCallback);
+        //NativeCCore.TestMapCallback();
+        //Debug.Log($"unity: ......调用C代码结束");
     }
 
     // 我自己的写法
@@ -37,31 +39,37 @@ public class NativeCDemo : MonoBehaviour
     }
 
     // Client的写法
-    [MonoPInvokeCallback(typeof(NativeCCore.MapCallback))]
-    public static void NearMapCallback(string szMapName, string szInfoDir, int nMapTemplateId, int nNotResetCamera)
-    {
-        ScriptCrash(nMapTemplateId);
-    }
+    //[MonoPInvokeCallback(typeof(NativeCCore.MapCallback))]
+    //public static void NearMapCallback(string szMapName, string szInfoDir, int nMapTemplateId, int nNotResetCamera)
+    //{
+    //    Debug.Log($"unity: ......NearMapCallback, szMapName={szMapName}");
+    //    ScriptCrash(nMapTemplateId);
+    //}
 
     private static void ScriptCrash(int nParam)
     {
-        Debug.Log($"unity: OnFrameMoveCallBack: {nParam}");
-        try {
-            Material m1 = null;
-            m1.color = Color.red;
-        }
-        catch (Exception e){
-            Debug.LogError($"unity: OnFrameMoveCallBack: {e.Message}");
-            Material m2 = null;
-            m2.color = Color.red;
-        }
-        finally{
-            Debug.Log($"unity: OnFrameMoveCallBack: finally");
-            Material m3 = null;
-            m3.color = Color.red;
-        }
-        //NativeCCore.CrashNoTry();
-        Debug.Log($"unity: Fuck done! throwing exception...");
+        Debug.Log($"unity: ScriptCrash: {nParam}");
+
+        // Renderer[] renderers = null;
+        // foreach (Renderer renderer in renderers) {
+        //     Material m2 = null;
+        //     m2.EnableKeyword("123");
+        // }
+        
+        CrashWithPointer();
+        Debug.Log($"unity: Fuck done! ScriptCrash end...");
+    }
+
+    private static unsafe void CrashWithPointer()
+    {
+        // 创建空指针并解引用
+        int* ptr = null;
+        *ptr = 42; // 这会触发访问违规，导致原生崩溃
+    }
+
+    private static void CSharpThrow()
+    {
+        throw new Exception("throwing CSharpThrow...");
     }
 
     private void CallFunction()
@@ -91,7 +99,7 @@ public class NativeCDemo : MonoBehaviour
             SceneManager.LoadScene("Launcher");
         }
 
-        if (GUILayout.Button("调用C代码", GUILayout.Height((Screen.height - retHeight) >> 4))) {
+        /*if (GUILayout.Button("调用C代码", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             CallFunction();
 
             Debug.Log($"......调用C代码");
@@ -102,6 +110,21 @@ public class NativeCDemo : MonoBehaviour
         }
         if (GUILayout.Button("C调用CS", GUILayout.Height((Screen.height - retHeight) >> 4))) {
             PInvokeFunction();
+        }*/
+        if (GUILayout.Button("NativeCCore.DllCanUnloadNow", GUILayout.Height((Screen.height - retHeight) >> 4))) {
+            Debug.Log($"......NativeCCore.DllCanUnloadNow");
+            try {
+                NativeCCore.DllCanUnloadNow();
+            }
+            catch (Exception e) {
+                Debug.Log($"NativeCCore.DllCanUnloadNow, ex: {e.Message}");
+            }          
+            Debug.Log($"......NativeCCore.DllCanUnloadNow end");
+        }
+        if (GUILayout.Button("TryAndCallSelf", GUILayout.Height((Screen.height - retHeight) >> 4))) {
+            Debug.Log($"unity: ......TryAndCallSelf");
+            NativeCCore.TryAndCallSelf();
+            Debug.Log($"unity: ......TryAndCallSelf end");
         }
 
 #if OLD_TEST
