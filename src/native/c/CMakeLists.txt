@@ -2,7 +2,7 @@
 
 project(tstunity)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(ANDROID_STL c++_static)
@@ -19,11 +19,11 @@ if(MSVC)
 else()
     # GCC/Clang编译器选项
     # -fexceptions 启用异常支持, -fno-exceptions关闭
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -std=c++11 -Wno-register -fexceptions ")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U_FORTIFY_SOURCE -fno-rtti -funwind-tables -fPIC -g ")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-format=msvc -fdiagnostics-absolute-paths -no-canonical-prefixes ")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char -fno-strict-overflow -fomit-frame-pointer -fvisibility=hidden -fstack-protector ")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstrict-aliasing -ffunction-sections -fdata-sections -fmessage-length=0 -fcolor-diagnostics ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -std=c++17 -fno-rtti -fexceptions ")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U_FORTIFY_SOURCE -funwind-tables -fPIC -g ")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-format=msvc -fdiagnostics-absolute-paths -no-canonical-prefixes ")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char -fno-strict-overflow -fomit-frame-pointer -fvisibility=hidden -fstack-protector ")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstrict-aliasing -ffunction-sections -fdata-sections -fmessage-length=0 -fcolor-diagnostics ")
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--wrap,sigaction -Wl,--wrap,sigaction -Wl,--gc-sections -Wl,--fatal-warnings -Wl,--no-undefined -Wl,--build-id -Wl,-z,noexecstack -shared -rdynamic -Wl,-z,relro ")
     add_compile_options(-DLIBTST_BUILD)
     add_compile_options(-DANDROID)
@@ -68,9 +68,30 @@ if (WIN32 AND NOT CYGWIN)
 		${THIRDPART_LIB} 
     )
 else ()
-    target_link_libraries(tstunity
-		m
-		log
-		${THIRDPART_LIB} 
-	)
+    # Android构建时包含MYLIB下的静态库
+    if(ANDROID)
+        target_link_options(tstunity
+            PRIVATE
+            -Wl,--version-script,${CMAKE_SOURCE_DIR}/tstunity.map
+            -Wl,--no-undefined-version
+        )
+        target_link_libraries(tstunity
+            m
+            log
+            #${CMAKE_CURRENT_SOURCE_DIR}/MYLIB/libcurl.a
+            #${CMAKE_CURRENT_SOURCE_DIR}/MYLIB/libcrypto.a
+            #${CMAKE_CURRENT_SOURCE_DIR}/MYLIB/libssl.a
+            #${CMAKE_CURRENT_SOURCE_DIR}/MYLIB/liblua.a
+            #${CMAKE_CURRENT_SOURCE_DIR}/MYLIB/libluahelper.a
+            #${CMAKE_CURRENT_SOURCE_DIR}/MYLIB/libiconv.a
+            #${CMAKE_CURRENT_SOURCE_DIR}/MYLIB/libplatform.a
+            ${THIRDPART_LIB} 
+        )
+    else()
+        target_link_libraries(tstunity
+            m
+            log
+            ${THIRDPART_LIB} 
+        )
+    endif()
 endif ()
